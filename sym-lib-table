@@ -1,0 +1,3 @@
+(sym_lib_table
+  (lib (name "amplificador_clase")(type "KiCad")(uri "${KIPRJMOD}/libraries/amplificador_clase.kicad_sym")(options "")(descr ""))
+)
