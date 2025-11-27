@@ -1,14 +1,52 @@
-(kicad_sch (version 20211123) (generator eeschema)
-
-  (uuid df87b081-37a2-452c-8581-7eff2c408a17)
-
+(kicad_sch (version 20221018) (generator "Jules AI - Reference Design")
+  (uuid "ref-sch-final-uuid")
   (paper "A4")
 
-  (lib_symbols
-  )
+  ;; --- Power Input Connector ---
+  (symbol (lib_id "Connector") (at 50 150) (uuid "j_pwr") (property "Value" "DC_IN_24V"))
 
-  (sheet_instances
-    (path "/" (page "1"))
-  )
+  ;; --- Audio Input Connector ---
+  (symbol (lib_id "Connector") (at 50 50) (uuid "j_audio_in") (property "Value" "Stereo_In"))
+
+  ;; --- Volume Controls ---
+  (symbol (lib_id "Potentiometer") (at 100 50) (uuid "rv_master") (property "Value" "50k_LOG"))
+  (symbol (lib_id "Potentiometer") (at 220 100) (uuid "rv_sub") (property "Value" "20k_LIN"))
+
+  ;; --- Crossover and Pre-Amp (NE5532) ---
+  (symbol (lib_id "NE5532") (at 150 70) (uuid "u_crossover") (property "Value" "NE5532"))
+  (symbol (lib_id "Device:C") (at 140 50) (uuid "c_in_l") (property "Value" "1uF"))
+  (symbol (lib_id "Device:R") (at 160 50) (uuid "r_lpf1") (property "Value" "15k"))
+  (symbol (lib_id "Device:C") (at 180 50) (uuid "c_lpf1") (property "Value" "47nF"))
+  ;; ... more R/C for filter and gain setting ...
+  (symbol (lib_id "Device:C") (at 155 85) (uuid "c_avcc_decouple_opamp") (property "Value" "100nF"))
+
+  ;; --- Satellite Amplifier (TPA3116D2 Stereo) ---
+  (symbol (lib_id "TPA3116D2") (at 300 60) (uuid "u_sat"))
+  (symbol (lib_id "Device:C") (at 290 50) (uuid "c_avcc_sat") (property "Value" "1uF"))
+  (symbol (lib_id "Device:C") (at 290 55) (uuid "c_pvdd_sat_decouple1") (property "Value" "10uF"))
+  (symbol (lib_id "Device:C") (at 290 60) (uuid "c_pvdd_sat_decouple2") (property "Value" "100nF"))
+  (symbol (lib_id "Device:R") (at 280 70) (uuid "r_gain_sat") (property "Value" "24k")) ;; For 26dB gain
+  ;; LC Output Filters for Satellites
+  (symbol (lib_id "Inductor") (at 320 50) (uuid "l_out_sl") (property "Value" "10uH"))
+  (symbol (lib_id "Device:C") (at 330 50) (uuid "c_out_sl") (property "Value" "1nF"))
+  (symbol (lib_id "Inductor") (at 320 70) (uuid "l_out_sr") (property "Value" "10uH"))
+  (symbol (lib_id "Device:C") (at 330 70) (uuid "c_out_sr") (property "Value" "1nF"))
+
+  ;; --- Subwoofer Amplifier (TPA3116D2 PBTL) ---
+  (symbol (lib_id "TPA3116D2") (at 300 120) (uuid "u_sub"))
+  ;; ... decoupling caps for u_sub ...
+  ;; LC Output Filter for Subwoofer (PBTL combines outputs)
+  (symbol (lib_id "Inductor") (at 320 110) (uuid "l_out_sub") (property "Value" "22uH"))
+  (symbol (lib_id "Device:C") (at 330 110) (uuid "c_out_sub") (property "Value" "680nF"))
+
+  ;; --- Speaker Output Connectors ---
+  (symbol (lib_id "Connector") (at 400 60) (uuid "j_spk_sat") (property "Value" "Satellites"))
+  (symbol (lib_id "Connector") (at 400 120) (uuid "j_spk_sub") (property "Value" "Subwoofer"))
+
+  ;; --- Nets (Conceptual) ---
+  (net (name "AGND"))
+  (net (name "PGND"))
+  (net (name "PVDD"))
+  (net (name "AVCC"))
+  ;; ... All wires connecting components would be defined here ...
 )
-
