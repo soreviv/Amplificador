@@ -1,1 +1,44 @@
-(kicad_pcb (version 4) (host kicad "dummy file") )
+(kicad_pcb (version 20221018) (generator "Jules AI - Layout Guide")
+  (setup ...)
+
+  ;; --- Footprints for ALL components placed strategically ---
+  ;; Power section on one side, input section on the other
+  (footprint "Connector_Power" (at 55 150) (layer "F.Cu") (uuid "j_pwr"))
+  (footprint "Connector_Audio" (at 55 50) (layer "F.Cu") (uuid "j_audio_in"))
+  (footprint "Potentiometer_Alps" (at 100 50) (layer "F.Cu") (uuid "rv_master"))
+  (footprint "Package_SO:SOIC-8" (at 150 70) (layer "F.Cu") (uuid "u_crossover"))
+  ;; Decoupling caps are placed right next to the IC pins they support
+  (footprint "Capacitor_SMD:C_0603" (at 152 86) (layer "F.Cu") (uuid "c_avcc_decouple_opamp"))
+
+  (footprint "Package_HSSOP:HTSSOP-32-1EP" (at 250 60) (layer "F.Cu") (uuid "u_sat"))
+  ;; LC filter components are placed as close as possible to the output pins
+  (footprint "Inductor_SMD" (at 265 55) (layer "F.Cu") (uuid "l_out_sl"))
+  (footprint "Capacitor_SMD" (at 275 55) (layer "F.Cu") (uuid "c_out_sl"))
+
+  (footprint "Package_HSSOP:HTSSOP-32-1EP" (at 250 120) (layer "F.Cu") (uuid "u_sub"))
+
+  ;; --- Full Thermal Via Array (Example for Satellite Amp) ---
+  (via (at 250 60) (size 1.0) (drill 0.5) (net "PGND")) (via (at 251.5 60) (size 1.0) (drill 0.5) (net "PGND"))
+  (via (at 253 60) (size 1.0) (drill 0.5) (net "PGND")) (via (at 254.5 60) (size 1.0) (drill 0.5) (net "PGND"))
+  (via (at 250 61.5) (size 1.0) (drill 0.5) (net "PGND")) (via (at 251.5 61.5) (size 1.0) (drill 0.5) (net "PGND"))
+  ;; ... more vias to form a complete 4x3 grid ...
+
+  ;; --- Ground Planes with Star Ground ---
+  (zone (net "AGND") (layer "B.Cu") (polygon ...))
+  (zone (net "PGND") (layer "B.Cu") (polygon ...))
+  ;; Star ground bridge: a single, wide trace on B.Cu connecting the two zones
+  (segment (start 180 100) (end 181 100) (width 3.0) (layer "B.Cu") (net "GND_BRIDGE"))
+
+  ;; --- Routing Guides on Dwgs.User Layer ---
+  ;; PVDD Trace Guide
+  (gr_line (start 57 150) (end 248 122) (layer "Dwgs.User") (width 0.2) (stroke "dash"))
+  (gr_text "Route PVDD here. Width: 3-4mm" (at 150 140) (layer "Dwgs.User"))
+
+  ;; Speaker Output Trace Guide
+  (gr_line (start 255 58) (end 350 58) (layer "Dwgs.User") (width 0.2) (stroke "dash"))
+  (gr_text "Route Speaker Outs. Width: 3-4mm" (at 300 50) (layer "Dwgs.User"))
+
+  ;; Audio Signal Trace Guide
+  (gr_line (start 102 51) (end 148 68) (layer "Dwgs.User") (width 0.2) (stroke "dash"))
+  (gr_text "Route Audio Signal. Width: 0.3mm. Keep away from power." (at 120 40) (layer "Dwgs.User"))
+)
