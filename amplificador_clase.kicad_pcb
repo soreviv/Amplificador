@@ -1,1 +1,36 @@
-(kicad_pcb (version 4) (host kicad "dummy file") )
+(kicad_pcb (version 20221018) (generator "Jules AI - Digital Layout Guide")
+  (setup ...)
+
+  ;; --- Component Footprints with Strategic Placement ---
+  ;; Digital Section (Top-Left)
+  (footprint "Module:ESP32-WROOM-32" (at 150 150) (layer "F.Cu") (uuid "u_mcu"))
+  (footprint "Connector_PinSocket_2.54mm" (at 220 180) (layer "F.Cu") (uuid "j_oled"))
+  (footprint "Connector_PinHeader_2.54mm" (at 220 160) (layer "F.Cu") (uuid "j_encoder"))
+
+  ;; Analog/DSP Section (Bottom-Left)
+  (footprint "Connector_JST_XH" (at 80 50) (layer "F.Cu") (uuid "j_inputs"))
+  (footprint "Package_DIP:DIP-16_W7.62mm" (at 130 50) (layer "F.Cu") (uuid "u_mux"))
+  (footprint "Module:ADAU1701_Module_Core" (at 180 80) (layer "F.Cu") (uuid "u_dsp"))
+
+  ;; Power Amplifier Section (Right Side, separated)
+  (footprint "Package_HSSOP:HTSSOP-32-1EP" (at 350 60) (layer "F.Cu") (uuid "u_sat"))
+  (footprint "Package_HSSOP:HTSSOP-32-1EP" (at 350 120) (layer "F.Cu") (uuid "u_sub"))
+  (footprint "Connector_Screw_Terminal" (at 450 60) (layer "F.Cu") (uuid "j_spk_sat"))
+  (footprint "Connector_Screw_Terminal" (at 450 120) (layer "F.Cu") (uuid "j_spk_sub"))
+
+  ;; --- Ground Planes with Separation ---
+  ;; Digital Ground Zone
+  (zone (net "DGND") (layer "B.Cu") (polygon (pts (xy 50 100) (xy 250 100) (xy 250 200) (xy 50 200))))
+  ;; Analog + Power Ground Zone
+  (zone (net "AGND_PGND") (layer "B.Cu") (polygon (pts (xy 50 40) (xy 480 40) (xy 480 99) (xy 50 99))))
+
+  ;; Star Ground Point connecting DGND and AGND_PGND
+  (segment (start 180 99) (end 180 100) (width 2.0) (layer "B.Cu") (net "GND_BRIDGE"))
+
+  ;; --- Routing Guides on Dwgs.User Layer ---
+  (gr_text "DIGITAL SECTION" (at 150 210) (layer "Dwgs.User"))
+  (gr_line (start 260 40) (end 260 210) (layer "Dwgs.User") (width 0.5) (stroke "dash")) ;; Separation line
+  (gr_text "ANALOG/POWER SECTION" (at 370 210) (layer "Dwgs.User"))
+  (gr_text "Route I2C bus here" (at 200 130) (layer "Dwgs.User"))
+  (gr_text "Keep audio traces short and away from digital lines" (at 150 40) (layer "Dwgs.User"))
+)

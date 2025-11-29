@@ -1,14 +1,50 @@
-(kicad_sch (version 20211123) (generator eeschema)
-
-  (uuid df87b081-37a2-452c-8581-7eff2c408a17)
-
+(kicad_sch (version 20221018) (generator "Jules AI - Digital Redesign")
+  (uuid "digital-sch-uuid-final")
   (paper "A4")
 
-  (lib_symbols
-  )
+  ;; --- Power Section (5V for Digital, 24V for Power Amp) ---
+  (symbol (lib_id "Regulator_Linear:LM7805_TO220") (at 100 200) (uuid "u_5v_reg"))
 
-  (sheet_instances
-    (path "/" (page "1"))
-  )
+  ;; --- Central MCU ---
+  (symbol (lib_id "MCU_Module:ESP32-WROOM-32") (at 200 150) (uuid "u_mcu"))
+
+  ;; --- User Interface Connectors ---
+  (symbol (lib_id "Connector:Conn_01x04") (at 300 180) (uuid "j_oled") (property "Value" "OLED_I2C"))
+  (symbol (lib_id "Connector:Conn_01x03") (at 300 160) (uuid "j_encoder") (property "Value" "RotaryEncoder"))
+  (symbol (lib_id "Connector:Conn_01x03") (at 300 140) (uuid "j_ir") (property "Value" "IR_Receiver"))
+
+  ;; --- Audio Input Stage ---
+  (symbol (lib_id "Connector:Conn_02x02") (at 100 50) (uuid "j_inputs") (property "Value" "AudioInputs_BT_AUX"))
+  (symbol (lib_id "Switch:4052") (at 150 50) (uuid "u_mux") (property "Value" "CD4052BE"))
+
+  ;; --- DSP Section ---
+  (symbol (lib_id "DSP_Module:ADAU1701_Module") (at 200 80) (uuid "u_dsp"))
+
+  ;; --- Audio Power Amplifiers ---
+  (symbol (lib_id "Amplifier_Audio:TPA3116D2") (at 400 60) (uuid "u_sat"))
+  (symbol (lib_id "Amplifier_Audio:TPA3116D2") (at 400 120) (uuid "u_sub"))
+
+  ;; --- Speaker Output Connectors ---
+  (symbol (lib_id "Connector:Conn_02x02") (at 500 60) (uuid "j_spk_sat"))
+  (symbol (lib_id "Connector:Conn_01x02") (at 500 120) (uuid "j_spk_sub"))
+
+  ;; --- NETS AND WIRES ---
+  ;; I2C Bus from ESP32 to DSP and OLED
+  (net (name "I2C_SDA") (node (pin "GPIO21") (symbol "u_mcu")) (node (pin "SDA") (symbol "u_dsp")) (node (pin "SDA") (symbol "j_oled")))
+  (net (name "I2C_SCL") (node (pin "GPIO22") (symbol "u_mcu")) (node (pin "SCL") (symbol "u_dsp")) (node (pin "SCL") (symbol "j_oled")))
+
+  ;; Control lines from ESP32
+  (net (name "MUX_A0") (node (pin "GPIO19") (symbol "u_mcu")) (node (pin "A") (symbol "u_mux")))
+  (net (name "AMP_MUTE") (node (pin "GPIO18") (symbol "u_mcu")) (node (pin "MUTE") (symbol "u_sat")) (node (pin "MUTE") (symbol "u_sub")))
+  (net (name "AMP_SD") (node (pin "GPIO5") (symbol "u_mcu")) (node (pin "SD") (symbol "u_sat")) (node (pin "SD") (symbol "u_sub")))
+
+  ;; Audio Path
+  ;; Input -> Mux -> DSP
+  (net (name "AUDIO_IN_L") (node (pin "1") (symbol "j_inputs")) (node (pin "Y0") (symbol "u_mux")))
+  (net (name "MUX_OUT_L") (node (pin "Y") (symbol "u_mux")) (node (pin "ADC_IN_L") (symbol "u_dsp")))
+  ;; DSP -> Amps
+  (net (name "DSP_OUT_SAT_L") (node (pin "DAC_OUT_L") (symbol "u_dsp")) (node (pin "INPL") (symbol "u_sat")))
+  (net (name "DSP_OUT_SAT_R") (node (pin "DAC_OUT_R") (symbol "u_dsp")) (node (pin "INPR") (symbol "u_sat")))
+  (net (name "DSP_OUT_SUB") (node (pin "DAC_OUT_SUB") (symbol "u_dsp")) (node (pin "INPL") (symbol "u_sub")))
+
 )
-
