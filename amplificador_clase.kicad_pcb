@@ -3,7 +3,7 @@
 
   ;; --- Footprints for ALL components placed strategically ---
   ;; Power section on one side, input section on the other
-  (footprint "Connector_Power" (at 55 150) (layer "F.Cu") (uuid "j_pwr"))
+  (footprint "Connector_BarrelJack:BarrelJack_Horizontal" (at 55 150) (layer "F.Cu") (uuid "j_pwr"))
   (footprint "Connector_Audio" (at 55 50) (layer "F.Cu") (uuid "j_audio_in"))
   (footprint "Potentiometer_Alps" (at 100 50) (layer "F.Cu") (uuid "rv_master"))
   (footprint "Package_SO:SOIC-8" (at 150 70) (layer "F.Cu") (uuid "u_crossover"))
@@ -17,6 +17,24 @@
 
   (footprint "Package_HSSOP:HTSSOP-32-1EP" (at 250 120) (layer "F.Cu") (uuid "u_sub"))
 
+  ;; --- New Components ---
+  (footprint "Package_TO_SOT_THT:TO-220-3_Vertical" (at 70 140) (layer "F.Cu") (uuid "u_reg_7805"))
+  (footprint "Connector_TerminalBlock:TerminalBlock_Bornier_2_P5.08mm" (at 70 155) (layer "F.Cu") (uuid "j_5v_out"))
+  (footprint "RF_Module:ESP32-WROOM-32" (at 120 130) (layer "F.Cu") (uuid "u_esp32"))
+  (footprint "Package_SO:QSOP-48_3.9x8.7mm_P0.635mm" (at 160 130) (layer "F.Cu") (uuid "u_adau1701"))
+
+  ;; Decoupling for New Components
+  (footprint "Capacitor_SMD:C_0603" (at 110 120) (layer "F.Cu") (uuid "c_esp_100n"))
+  (footprint "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm" (at 115 120) (layer "F.Cu") (uuid "c_esp_10u"))
+  (footprint "Capacitor_SMD:C_0603" (at 150 120) (layer "F.Cu") (uuid "c_adau_100n"))
+  (footprint "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm" (at 155 120) (layer "F.Cu") (uuid "c_adau_10u"))
+
+  ;; Mounting Holes
+  (footprint "MountingHole:MountingHole_3.2mm_M3" (at 45 45) (layer "F.Cu") (uuid "mh1"))
+  (footprint "MountingHole:MountingHole_3.2mm_M3" (at 415 45) (layer "F.Cu") (uuid "mh2"))
+  (footprint "MountingHole:MountingHole_3.2mm_M3" (at 45 165) (layer "F.Cu") (uuid "mh3"))
+  (footprint "MountingHole:MountingHole_3.2mm_M3" (at 415 165) (layer "F.Cu") (uuid "mh4"))
+
   ;; --- Full Thermal Via Array (Example for Satellite Amp) ---
   (via (at 250 60) (size 1.0) (drill 0.5) (net "PGND")) (via (at 251.5 60) (size 1.0) (drill 0.5) (net "PGND"))
   (via (at 253 60) (size 1.0) (drill 0.5) (net "PGND")) (via (at 254.5 60) (size 1.0) (drill 0.5) (net "PGND"))
@@ -24,8 +42,11 @@
   ;; ... more vias to form a complete 4x3 grid ...
 
   ;; --- Ground Planes with Star Ground ---
-  (zone (net "AGND") (layer "B.Cu") (polygon ...))
-  (zone (net "PGND") (layer "B.Cu") (polygon ...))
+  ;; AGND Zone (Input and Digital Section)
+  (zone (net "AGND") (layer "B.Cu") (polygon (pts (xy 40 40) (xy 180 40) (xy 180 170) (xy 40 170))))
+  ;; PGND Zone (Power Section)
+  (zone (net "PGND") (layer "B.Cu") (polygon (pts (xy 180 40) (xy 420 40) (xy 420 170) (xy 180 170))))
+
   ;; Star ground bridge: a single, wide trace on B.Cu connecting the two zones
   (segment (start 180 100) (end 181 100) (width 3.0) (layer "B.Cu") (net "GND_BRIDGE"))
 
@@ -41,4 +62,7 @@
   ;; Audio Signal Trace Guide
   (gr_line (start 102 51) (end 148 68) (layer "Dwgs.User") (width 0.2) (stroke "dash"))
   (gr_text "Route Audio Signal. Width: 0.3mm. Keep away from power." (at 120 40) (layer "Dwgs.User"))
+
+  ;; --- Edge Cuts ---
+  (gr_poly (pts (xy 40 40) (xy 420 40) (xy 420 170) (xy 40 170)) (layer "Edge.Cuts") (width 0.1))
 )
