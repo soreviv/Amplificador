@@ -3,10 +3,16 @@
   (paper "A4")
 
   ;; --- Power Input Connector ---
-  (symbol (lib_id "Connector") (at 50 150) (uuid "j_pwr") (property "Value" "DC_IN_24V"))
+  (symbol (lib_id "Connector") (at 50 150) (uuid "j_pwr") (property "Value" "DC_IN_24V")
+    (pin "1" (uuid "p_pwr_1") (net_name "+24V"))
+    (pin "2" (uuid "p_pwr_2") (net_name "PGND"))
+  )
 
   ;; --- Audio Input Connector ---
-  (symbol (lib_id "Connector") (at 50 50) (uuid "j_audio_in") (property "Value" "Stereo_In"))
+  (symbol (lib_id "Connector") (at 50 50) (uuid "j_audio_in") (property "Value" "Stereo_In")
+    (pin "1" (uuid "p_ain_1") (net_name "AGND"))
+    ;; Signal pins would go here
+  )
 
   ;; --- Volume Controls ---
   (symbol (lib_id "Potentiometer") (at 100 50) (uuid "rv_master") (property "Value" "50k_LOG"))
@@ -43,10 +49,45 @@
   (symbol (lib_id "Connector") (at 400 60) (uuid "j_spk_sat") (property "Value" "Satellites"))
   (symbol (lib_id "Connector") (at 400 120) (uuid "j_spk_sub") (property "Value" "Subwoofer"))
 
+  ;; --- Net-Tie for Star Ground ---
+  (symbol (lib_id "Device:Net-Tie_2") (at 180 100) (uuid "nt1") (property "Value" "NetTie_2")
+    (pin "1" (uuid "p1") (net_name "AGND"))
+    (pin "2" (uuid "p2") (net_name "PGND"))
+  )
+
+  ;; --- New Components (Digital/Power) ---
+  (symbol (lib_id "Regulator_Linear:LM7805_TO220") (at 70 140) (uuid "u_reg_7805") (property "Value" "LM7805")
+    (pin "1" (uuid "p_reg_in") (net_name "+24V"))
+    (pin "2" (uuid "p_reg_gnd") (net_name "AGND"))
+    (pin "3" (uuid "p_reg_out") (net_name "+5V"))
+  )
+  (symbol (lib_id "Connector") (at 70 155) (uuid "j_5v_out") (property "Value" "5V_Out")
+    (pin "1" (uuid "p_5v_1") (net_name "+5V"))
+    (pin "2" (uuid "p_5v_2") (net_name "AGND"))
+  )
+  (symbol (lib_id "MCU_Module:ESP32-WROOM-32") (at 120 130) (uuid "u_esp32") (property "Value" "ESP32-WROOM-32")
+    (pin "1" (uuid "p_esp_gnd1") (net_name "AGND"))
+    (pin "2" (uuid "p_esp_3v3") (net_name "+3V3"))
+  )
+  (symbol (lib_id "Audio:ADAU1701") (at 160 130) (uuid "u_adau1701") (property "Value" "ADAU1701")
+    (pin "1" (uuid "p_adau_gnd") (net_name "AGND"))
+    (pin "2" (uuid "p_adau_3v3") (net_name "+3V3"))
+  )
+
+  ;; Decoupling
+  (symbol (lib_id "Device:C") (at 110 120) (uuid "c_esp_100n") (property "Value" "100nF")
+    (pin "1" (uuid "p_ce1_1") (net_name "+3V3")) (pin "2" (uuid "p_ce1_2") (net_name "AGND"))
+  )
+  (symbol (lib_id "Device:C") (at 150 120) (uuid "c_adau_100n") (property "Value" "100nF")
+    (pin "1" (uuid "p_ca1_1") (net_name "+3V3")) (pin "2" (uuid "p_ca1_2") (net_name "AGND"))
+  )
+
   ;; --- Nets (Conceptual) ---
   (net (name "AGND"))
   (net (name "PGND"))
   (net (name "PVDD"))
   (net (name "AVCC"))
-  ;; ... All wires connecting components would be defined here ...
+  (net (name "+24V"))
+  (net (name "+5V"))
+  (net (name "+3V3"))
 )
